@@ -1,0 +1,54 @@
+.coding-section {
+  padding: 70px 20px;
+  text-align: center;
+  background: #0e0e0e;
+  color: #fff;
+}
+
+.coding-title {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  font-weight: 700;
+}
+
+.coding-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.coding-card {
+  background-color: #1c1c1c;
+  border: 2.5px solid;
+  border-radius: 20px;
+  padding: 25px 30px;
+  width: 180px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.coding-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.coding-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  transition: transform 0.3s ease;
+}
+
+.coding-card:hover .coding-logo {
+  transform: scale(1.1);
+}
+
+.coding-card p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 5px;
+}
