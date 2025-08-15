@@ -1,41 +1,45 @@
 const express = require("express");
-const router = express.Router();
 const cors = require("cors");
 const nodemailer = require("nodemailer");
+const path = require("path");
+require("dotenv").config();
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/", router);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server Running on port ${PORT}`));
+// Serve frontend build
+app.use(express.static(path.join(__dirname, "personal-portfolio/build")));
 
+// Contact Email Transporter (Gmail)
 const contactEmail = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
-    user: "vangarajayasri2005@gmail.com",
-    pass: "anca iqcc hqis wcln"  
+    user: process.env.EMAIL_USER, // from .env
+    pass: process.env.EMAIL_PASS, // from .env (App Password)
   },
 });
 
 contactEmail.verify((error) => {
   if (error) {
-    console.log("Error setting up transporter:", error);
+    console.error("Error setting up transporter:", error);
   } else {
-    console.log("Ready to Send");
+    console.log("✅ Ready to Send Emails");
   }
 });
 
-router.post("/contact", (req, res) => {
-  const name = req.body.firstName + " " + req.body.lastName;
+// Routes
+app.post("/contact", (req, res) => {
+  const name = `${req.body.firstName} ${req.body.lastName}`;
   const email = req.body.email;
   const message = req.body.message;
   const phone = req.body.phone;
 
   const mail = {
     from: `"${name}" <${email}>`,
-    to: "vangarajayasri2005@gmail.com",
+    to: process.env.EMAIL_USER,
     subject: "Contact Form Submission - Portfolio",
     html: `
       <p><strong>Name:</strong> ${name}</p>
@@ -47,11 +51,20 @@ router.post("/contact", (req, res) => {
 
   contactEmail.sendMail(mail, (error, info) => {
     if (error) {
-      console.error("Error sending email:", error);
+      console.error("❌ Error sending email:", error);
       return res.status(500).json({ code: 500, status: "Failed to send message" });
     } else {
-      console.log("Email sent:", info.response);
+      console.log("📧 Email sent:", info.response);
       return res.status(200).json({ code: 200, status: "Message Sent" });
     }
   });
 });
+
+// Handle React routing, return index.html for all other routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "personal-portfolio/build", "index.html"));
+});
+
+// Server listener
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
