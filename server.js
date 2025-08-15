@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve frontend build
-app.use(express.static(path.join(__dirname, "personal-portfolio/build")));
+app.use(express.static(path.join(__dirname, "build")));
 
 // Contact Email Transporter (Gmail)
 const contactEmail = nodemailer.createTransport({
@@ -20,7 +20,12 @@ const contactEmail = nodemailer.createTransport({
     user: process.env.EMAIL_USER, // from .env
     pass: process.env.EMAIL_PASS, // from .env (App Password)
   },
+  logger: true, // log SMTP traffic
+  debug: true
 });
+
+console.log("Email:", process.env.EMAIL_USER);
+console.log("Pass:", process.env.EMAIL_PASS);
 
 contactEmail.verify((error) => {
   if (error) {
@@ -62,7 +67,7 @@ app.post("/contact", (req, res) => {
 
 // Handle React routing, return index.html for all other routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "personal-portfolio/build", "index.html"));
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 // Server listener
